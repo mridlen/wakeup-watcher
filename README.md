@@ -4,9 +4,9 @@ Supports only xscreensaver at this time.
 
 #### What This Does
 - there are 2 scripts, wakeup.sh and wakeup-watcher.sh
--   wakeup-watcher.sh watches the xscreensaver process, and when it sees you logged in, it will run wakeup.sh
--   wakeup.sh will unlock your other systems without having to type in the password 2-5 times
--   you should also bind wakeup.sh to Super+U or some other hotkey in case your other systems fall asleep on you
+  - wakeup-watcher.sh watches the xscreensaver process, and when it sees you logged in, it will run wakeup.sh
+  - wakeup.sh will unlock your other systems without having to type in the password 2-5 times
+- you should also bind wakeup.sh to Super+U or some other hotkey in case your other systems fall asleep on you
 - logs are kept in wakeup.sh.log, in the same directory as wakeup.sh
 - file lock is stored in wakeup.sh.lock, in the same directory as wakeup.sh
 
