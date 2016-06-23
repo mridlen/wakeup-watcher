@@ -2,6 +2,16 @@
 Unlocks your xscreensaver sessions on other systems when you unlock your main system, for use with synergy.
 Supports only xscreensaver at this time.
 
+#### What This Does
+- there are 2 scripts, wakeup.sh and wakeup-watcher.sh
+-   wakeup-watcher.sh watches the xscreensaver process, and when it sees you logged in, it will run wakeup.sh
+-   wakeup.sh will unlock your other systems without having to type in the password 2-5 times
+-   you should also bind wakeup.sh to Super+U or some other hotkey in case your other systems fall asleep on you
+- logs are kept in wakeup.sh.log, in the same directory as wakeup.sh
+- file lock is stored in wakeup.sh.lock, in the same directory as wakeup.sh
+
+Say for example you have a system that is running synergy, and 2 laptops. You want to be able to keep them locked when you step away (e.g. to go to the bathroom), but you don't want to spend all day typing your password. With wakeup-watcher, you can type in your password on your synergy server (your "main" system) and it will enter in the passwords for you on each system. This script assumes all your systems share the same username and password. If they differ, you may need to customize the script a bit.
+
 #### Installation steps:
 - copy the files to your home directory (or some other directory of your choice)
 - edit the wakeup.sh and add your user/pass and hostname information
