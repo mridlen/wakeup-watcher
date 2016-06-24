@@ -12,23 +12,23 @@ Supports only xscreensaver at this time.
 
 Say for example you have a system that is running synergy, and 2 laptops. You want to be able to keep them locked when you step away (e.g. to go to the bathroom), but you don't want to spend all day typing your password. With wakeup-watcher, you can type in your password on your synergy server (your "main" system) and it will enter in the passwords for you on each system. This script assumes all your systems share the same username and password. If they differ, you may need to customize the script a bit.
 
-#### Installation steps:
-- copy the files to your home directory (or some other directory of your choice)
-- edit the wakeup.sh and add your user/pass and hostname information
-- follow the installation instructions in the wakeup.sh (see below)
-- Optionally add "/home/username/wakeup-watcher.sh &" to your /home/username/.profile to run the daemon on startup
+Xscreensaver has a "-lock" option but no "-unlock" option. This is for security purposes, and is unlikely to change. Therefore, we have to send keypresses to the remote system to unlock it using a utility called "xdotool".
 
-#### Installation Instructions (from wakeup.sh file)
-1. Install ssh keys between all your systems
+#### Installation steps:
+1. copy the files to your home directory (or some other directory of your choice)
+2. edit the wakeup.sh and add your user/pass and hostname information
+3. follow the installation instructions in the wakeup.sh (see below)
+4. Install ssh keys between all your systems
   a. Create keys using "ssh-keygen" if you haven't done this already.
   b. Use "ssh-copy-id user@hostname" to copy it to your other systems.
   c. Use "ssh user@hostname" to make sure you can log in without password.
-2. Install the "xdotool" package on all systems - this will allow you to use the keyboard to send a password remotely
-3. Configure the variables in the configuration section
-4. Refer to wakeup.sh.log for troubleshooting
+5. Install the "xdotool" package on all systems - this will allow you to use the keyboard to send a password remotely
+6. Configure the variables in the configuration section
+7. Optionally add "/home/username/wakeup-watcher.sh &" to your /home/username/.profile to run the daemon on startup
+8. Optionally bind Super+U to wakeup.sh
+9. Refer to wakeup.sh.log for troubleshooting
 
 #### Usage
 
-- Recommendation: bind the wakeup.sh to Super+U in your window manager (i.e. google it)
 - READ THE WARNINGS IN THE wakeup.sh FILE!! IF THIS SCRIPT MALFUNCTIONS, YOU MIGHT ACCIDENTALLY EMAIL YOUR PASSWORD TO YOUR DISGRUNTLED COWORKERS
 - If you have wakeup-watcher.sh running in the background, it will automatically log in your other systems on unblank (which means you authenticated successfully with xscreensaver).
