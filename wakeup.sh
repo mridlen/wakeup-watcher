@@ -31,11 +31,12 @@ USER=username
 #    "P shift+2 s s w 0 r d shift+4 shift+4"
 PASSWORD="P shift+2 s s w 0 r d shift+4 shift+4"
 
-# Hosts. Add more hosts by giving them unique variables e.g. HOST3, HOST4 and then copy and pasting the section
-# below to add more scripts, and then modify the variables in that section to reflect that new host name.
-# Should be straightforward.
-HOST1=netbook
-HOST2=presario
+# Hosts. These are the hostnames or IPs of the systems you are entering the password on.
+# Separated by spaces. Should be straightforward.
+# e.g.
+# HOSTS="laptop1 laptop2 computer1 computer2 10.22.22.22"
+HOSTS="netbook presario"
+
 ### End Configuration ###
 
 ### Script Begin ###
@@ -60,27 +61,19 @@ set -m
 #The "(" and ") &" sections of these scripts run subprocesses to run the commands independently.
 #This is because "xscreensaver-command -time" can take a while to respond.
 
-### HOST 1 ###
-(
-if [ $(ssh $USER@$HOST1 "xscreensaver-command -time | grep locked | wc -l") -gt 0 ]; then
-        ssh -X $USER@$HOST1 "export DISPLAY=:0; xdotool key Escape $PASSWORD Return" &
-        echo "Password sent to $HOST1"
-else
-        echo "System $HOST1 is already unlocked"
-fi
-) &
-### HOST 1 End ###
-
-### HOST 2 ###
-(
-if [ $(ssh $USER@$HOST2 "xscreensaver-command -time | grep locked | wc -l") -gt 0 ]; then
-        ssh -X $USER@$HOST2 "export DISPLAY=:0; xdotool key Escape $PASSWORD Return" &
-        echo "Password sent to $HOST2"
-else
-        echo "System $HOST2 is already unlocked"
-fi
-) &
-### HOST 2 End ###
+### HOST SECTION ###
+for HOST in $HOSTS
+do
+        (
+        if [[ $(ssh $USER@$HOST "xscreensaver-command -time | grep locked | wc -l") -gt 0 ]]; then
+                ssh -X $USER@$HOST "export DISPLAY=:0; xdotool key Escape $PASSWORD Return" &
+                echo "Password sent to $HOST"
+        else
+                echo "System $HOST is already unlocked"
+        fi
+        ) &
+done
+### HOST SECTION END ###
 
 #wait 5 seconds for safety and then remove the lock file
 sleep 5
