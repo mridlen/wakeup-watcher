@@ -17,13 +17,11 @@ Xscreensaver has a "-lock" option but no "-unlock" option. This is for security 
 #### Installation steps:
 1. copy the files to your home directory (or some other directory of your choice)
 2. edit the wakeup.sh and add your user/pass and hostname information
-3. follow the installation instructions in the wakeup.sh (see below)
 4. Install ssh keys between all your systems
   a. Create keys using "ssh-keygen" if you haven't done this already.
   b. Use "ssh-copy-id user@hostname" to copy it to your other systems.
   c. Use "ssh user@hostname" to make sure you can log in without password.
 5. Install the "xdotool" package on all systems - this will allow you to use the keyboard to send a password remotely
-6. Configure the variables in the configuration section
 7. Optionally add "/home/username/wakeup-watcher.sh &" to your /home/username/.profile to run the daemon on startup
 8. Optionally bind Super+U to wakeup.sh
 9. Refer to wakeup.sh.log for troubleshooting
