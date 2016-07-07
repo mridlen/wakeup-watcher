@@ -35,6 +35,8 @@ PASSWORD="P shift+2 s s w 0 r d shift+4 shift+4"
 # Separated by spaces. Should be straightforward.
 # e.g.
 # HOSTS="laptop1 laptop2 computer1 computer2 10.22.22.22"
+# You can use this line to unlock all connected synergy systems (assumes the default port of 24800)
+# HOSTS="$(netstat -an | grep 24800 | grep -v 0.0.0.0 | awk '{ print $5 }' | awk -F':' '{ print $1 }' | tr '\n' ' ')"
 HOSTS="netbook presario"
 
 ### End Configuration ###
