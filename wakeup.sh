@@ -67,12 +67,30 @@ set -m
 for HOST in $HOSTS
 do
         (
-        if [[ $(ssh $USER@$HOST "xscreensaver-command -time | grep locked | wc -l") -gt 0 ]]; then
-                ssh -X $USER@$HOST "export DISPLAY=:0; xdotool key Escape $PASSWORD Return" &
-                echo "Password sent to $HOST"
-        else
-                echo "System $HOST is already unlocked"
-        fi
+        RETRY=0
+        while [[ $(ssh $USER@$HOST "xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]];
+        do
+                if [[ $RETRY -gt 0 ]]; then
+                        echo "Host $HOST was not successfully unlocked. Double checking in 5 seconds..."
+                        sleep 5
+                        if [[ $(ssh $USER@$HOST "xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]]; then
+                                echo "Host $HOST still locked."
+                                ssh -X $USER@$HOST "export DISPLAY=:0; xdotool key --delay 35 Escape $PASSWORD Return"
+                                echo "Password sent to $HOST. RETRY = 1. Sleep 15 seconds before testing..."
+                                sleep 15
+                        else
+                                echo "Host $HOST is now unlocked."
+                                break
+                        fi
+                else
+                        ssh -X $USER@$HOST "export DISPLAY=:0; xdotool key --delay 35 Escape $PASSWORD Return"
+                        echo "Password sent to $HOST. RETRY = 1. Sleep 15 seconds before testing..."
+                        RETRY=1
+                        sleep 15
+
+                fi
+        done
+        echo "$HOST logged in successfully!"
         ) &
 done
 ### HOST SECTION END ###
