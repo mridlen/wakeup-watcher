@@ -36,8 +36,7 @@ PASSWORD="P shift+2 s s w 0 r d shift+4 shift+4"
 # e.g.
 # HOSTS="laptop1 laptop2 computer1 computer2 10.22.22.22"
 # You can use this line to unlock all connected synergy systems (assumes the default port of 24800)
-# HOSTS="$(netstat -an | grep 24800 | grep -v 0.0.0.0 | awk '{ print $5 }' | awk -F':' '{ print $1 }' | uniq -u | tr '\n' ' ')"
-HOSTS="netbook presario"
+HOSTS="$(netstat -an | grep 24800 | grep -v 0.0.0.0 | awk '{ print $5 }' | awk -F':' '{ print $1 }' | uniq -u )"
 
 ### End Configuration ###
 
@@ -68,14 +67,14 @@ for HOST in $HOSTS
 do
         (
         RETRY=0
-        while [[ $(ssh $USER@$HOST "xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]];
+        while [[ $(ssh $USER@$HOST "export DISPLAY=:0.0; xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]];
         do
                 if [[ $RETRY -gt 0 ]]; then
                         echo "Host $HOST was not successfully unlocked. Double checking in 5 seconds..."
                         sleep 5
-                        if [[ $(ssh $USER@$HOST "xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]]; then
+                        if [[ $(ssh $USER@$HOST "export DISPLAY=:0.0; xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]]; then
                                 echo "Host $HOST still locked."
-                                ssh -X $USER@$HOST "export DISPLAY=:0; xdotool key --delay 35 Escape $PASSWORD Return"
+                                ssh $USER@$HOST "export DISPLAY=:0.0; xdotool key --delay 35 Escape $PASSWORD Return"
                                 echo "Password sent to $HOST. RETRY = 1. Sleep 15 seconds before testing..."
                                 sleep 15
                         else
@@ -83,7 +82,7 @@ do
                                 break
                         fi
                 else
-                        ssh -X $USER@$HOST "export DISPLAY=:0; xdotool key --delay 35 Escape $PASSWORD Return"
+                        ssh $USER@$HOST "export DISPLAY=:0.0; xdotool key --delay 35 Escape $PASSWORD Return"
                         echo "Password sent to $HOST. RETRY = 1. Sleep 15 seconds before testing..."
                         RETRY=1
                         sleep 15
