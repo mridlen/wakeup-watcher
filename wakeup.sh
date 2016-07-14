@@ -63,7 +63,7 @@ set -m
 #This is because "xscreensaver-command -time" can take a while to respond.
 
 ### HOST SECTION ###
-for HOST in $HOSTS
+while read -r HOST
 do
         (
         RETRY=0
@@ -91,7 +91,7 @@ do
         done
         echo "$HOST logged in successfully!"
         ) &
-done
+done <<< "$HOSTS"
 ### HOST SECTION END ###
 
 #wait 5 seconds for safety and then remove the lock file
