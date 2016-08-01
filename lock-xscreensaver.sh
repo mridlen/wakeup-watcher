@@ -21,7 +21,7 @@ while read -r HOST
 do
         (
                 echo "locking $USER@$HOST..."
-                ssh $USER@$HOST "export DISPLAY=:0.0; xscreensaver-command -lock"
+                ssh -o "StrictHostKeyChecking no" $USER@$HOST "export DISPLAY=:0.0; xscreensaver-command -lock"
         ) &
 done <<< "$HOSTS"
 ### HOST SECTION END ###
