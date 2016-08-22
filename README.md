@@ -17,7 +17,8 @@ Xscreensaver has a "-lock" option but no "-unlock" option. This is for security 
 
 #### Installation steps:
 1. copy the files to your home directory (or some other directory of your choice)
-2. edit the wakeup.sh and add your user/pass and hostname information
+2. Give yourself read/write/execute, and everyone else no access. (chmod 700 wakeup.sh;chmod 700 wakeup-watcher.sh;chmod 700 lock-screensaver.sh) This ensures that only you you can look at them.
+3. edit the wakeup.sh and add your user/pass and hostname information
 4. Install ssh keys between all your systems
   a. Create keys using "ssh-keygen" if you haven't done this already.
   b. Use "ssh-copy-id user@hostname" to copy it to your other systems.
