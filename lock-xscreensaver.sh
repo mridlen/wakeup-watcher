@@ -20,8 +20,11 @@ HOSTS="$(netstat -an | grep 24800 | grep -v 0.0.0.0 | awk '{ print $5 }' | awk -
 while read -r HOST
 do
         (
+                echo "getting display number..."
+                DISPLAY_NUMBER=$(echo $(ssh -o "StrictHostKeyChecking no" $USER@$HOST "ls -al /tmp/.X11-unix | grep $USER") | awk '{print $9}' | awk '{ print substr($0,2,2) }' )
+                echo "display: $DISPLAY_NUMBER"
                 echo "locking $USER@$HOST..."
-                ssh -o "StrictHostKeyChecking no" $USER@$HOST "export DISPLAY=:0.0; xscreensaver-command -lock"
+                ssh -o "StrictHostKeyChecking no" $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xscreensaver-command -lock"
         ) &
 done <<< "$HOSTS"
 ### HOST SECTION END ###
