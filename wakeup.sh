@@ -67,14 +67,15 @@ while read -r HOST
 do
         (
         RETRY=0
-        while [[ $(ssh $USER@$HOST "export DISPLAY=:0.0; xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]];
+        DISPLAY_NUMBER=$(echo $(ssh -o "StrictHostKeyChecking no" $USER@$HOST "ls -al /tmp/.X11-unix | grep $USER") | awk '{print $9}' | awk '{ print substr($0,2,2) }' )
+        while [[ $(ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]];
         do
                 if [[ $RETRY -gt 0 ]]; then
                         echo "Host $HOST was not successfully unlocked. Double checking in 5 seconds..."
                         sleep 5
-                        if [[ $(ssh $USER@$HOST "export DISPLAY=:0.0; xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]]; then
+                        if [[ $(ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]]; then
                                 echo "Host $HOST still locked."
-                                ssh $USER@$HOST "export DISPLAY=:0.0; xdotool key --delay 35 Escape $PASSWORD Return"
+                                ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xdotool key --delay 50 Escape; sleep 1; xdotool key --delay 50 $PASSWORD Return"
                                 echo "Password sent to $HOST. RETRY = 1. Sleep 15 seconds before testing..."
                                 sleep 15
                         else
@@ -82,7 +83,7 @@ do
                                 break
                         fi
                 else
-                        ssh $USER@$HOST "export DISPLAY=:0.0; xdotool key --delay 35 Escape $PASSWORD Return"
+                        ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xdotool key --delay 50 Escape; sleep 1; xdotool key --delay 50 $PASSWORD Return"
                         echo "Password sent to $HOST. RETRY = 1. Sleep 15 seconds before testing..."
                         RETRY=1
                         sleep 15
@@ -93,6 +94,7 @@ do
         ) &
 done <<< "$HOSTS"
 ### HOST SECTION END ###
+
 
 #wait 5 seconds for safety and then remove the lock file
 sleep 5
