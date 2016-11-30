@@ -53,12 +53,8 @@ while read -r HOST
 do
         (
         DISPLAY_NUMBER=$(echo $(ssh -o "StrictHostKeyChecking no" $USER@$HOST "ls -al /tmp/.X11-unix | grep $USER") | awk '{print $9}' | awk '{ print substr($0,2,2) }' )
-        while [[ $(ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]];
-        do
-             ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; pkill -HUP xscreensaver"
-             sleep 5
-        done
-        echo "$HOST logged in successfully!"
+        ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; pkill -HUP xscreensaver"
+        echo "$HOST pkill command sent"
         ) &
 done <<< "$HOSTS"
 ### HOST SECTION END ###
