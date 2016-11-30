@@ -19,9 +19,9 @@ Planned critical updates:
 - logs are kept in wakeup.sh.log, in the same directory as wakeup.sh
 - file lock is stored in wakeup.sh.lock, in the same directory as wakeup.sh
 
-Say for example you have a system that is running synergy, and 2 laptops. You want to be able to keep them locked when you step away (e.g. to go to the bathroom), but you don't want to spend all day typing your password. With wakeup-watcher, you can type in your password on your synergy server (your "main" system) and it will enter in the passwords for you on each system. This script assumes all your systems share the same username and password. If they differ, you may need to customize the script a bit.
+Say for example you have a system that is running synergy, and 2 laptops. You want to be able to keep them locked when you step away (e.g. to go to the bathroom), but you don't want to spend all day typing your password. With wakeup-watcher, you can type in your password on your synergy server (your "main" system) and it will unlock your other systems with "pkill -HUP xscreensaver".
 
-Xscreensaver has a "-lock" option but no "-unlock" option. This is for security purposes, and is unlikely to change. Therefore, we have to send keypresses to the remote system to unlock it using a utility called "xdotool".
+Xscreensaver has a "-lock" option but no "-unlock" option, but "pkill -HUP xscreensaver" seems to work like unlock.
 
 #### Installation steps:
 1. copy the files to your home directory (or some other directory of your choice)
