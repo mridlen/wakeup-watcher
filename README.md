@@ -2,6 +2,13 @@
 Unlocks your xscreensaver sessions on other systems when you unlock your main system, for use with synergy.
 Supports only xscreensaver at this time.
 
+#### News
+Lots of big updates coming to the script thanks to some recent feedback: https://www.reddit.com/r/bash/comments/5eakrk/wakeupwatcher_bash_script_that_unlocks/dabjqt4/
+
+Planned critical updates:
+1. Wayland is going to make xdotool irrelevant soon (Fedora 25 is already running it), so I have to use something else than xdotool, fortunately "pkill -HUP xscreensaver" is going to work just fine. It basically unlocks it just fine and leaves the daemon running.
+2. Flock. Not the browser, but this is a tool that manages script instances. I had written custom code to do that, but flock handles it easier. 
+
 #### What This Does
 - there are 3 scripts
   - wakeup-watcher.sh watches the xscreensaver process, and when it sees you logged in, it will run wakeup.sh
