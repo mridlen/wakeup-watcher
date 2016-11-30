@@ -7,13 +7,13 @@ Lots of big updates coming to the script thanks to some recent feedback from htt
 
 Planned critical updates:
 
-1. Wayland is going to make xdotool irrelevant soon (Fedora 25 is already running it), so I have to use something else than xdotool, fortunately "pkill -HUP xscreensaver" is going to work just fine. It basically unlocks it just fine and leaves the daemon running.
+1. Wayland is going to make xdotool irrelevant soon (Fedora 25 is already running it), so I have to use something else than xdotool, fortunately "pkill -HUP xscreensaver" is going to work just fine. It basically unlocks it just fine and leaves the daemon running. I've put this into place, but neither synergy nor xdotool support Wayland currently, so I have a little time before I can really make this script Wayland compatible. For now, continue using Xorg/synergy/xscreensaver.
 2. Flock. Not the browser, but this is a tool that manages script instances. I had written custom code to do that, but flock handles it easier. 
 
 #### What This Does
 - there are 3 scripts
   - wakeup-watcher.sh watches the xscreensaver process, and when it sees you logged in, it will run wakeup.sh
-  - wakeup.sh will unlock your other systems without having to type in the password 2-5 times
+  - wakeup.sh will unlock your other systems without having to type in the password
   - lock-xscreensaver.sh willl lock all your synergy connected systems
 - you should also bind wakeup.sh to Super+U or some other hotkey in case your other systems fall asleep on you
 - logs are kept in wakeup.sh.log, in the same directory as wakeup.sh
@@ -31,12 +31,10 @@ Xscreensaver has a "-lock" option but no "-unlock" option. This is for security 
   a. Create keys using "ssh-keygen" if you haven't done this already.
   b. Use "ssh-copy-id user@hostname" to copy it to your other systems.
   c. Use "ssh user@hostname" to make sure you can log in without password.
-5. Install the "xdotool" package on all systems - this will allow you to use the keyboard to send a password remotely
-7. Optionally add "/home/username/wakeup-watcher.sh &" to your /home/username/.profile to run the daemon on startup
-8. Optionally bind Super+U to wakeup.sh
-9. Refer to wakeup.sh.log for troubleshooting
+5. Optionally add "/home/username/wakeup-watcher.sh &" to your /home/username/.profile to run the daemon on startup
+6. Optionally bind Super+U to wakeup.sh
+7. Refer to wakeup.sh.log for troubleshooting
 
 #### Usage
 
-- READ THE WARNINGS IN THE wakeup.sh FILE!! IF THIS SCRIPT MALFUNCTIONS, YOU MIGHT ACCIDENTALLY EMAIL YOUR PASSWORD TO YOUR DISGRUNTLED COWORKERS
 - If you have wakeup-watcher.sh running in the background, it will automatically log in your other systems on unblank (which means you authenticated successfully with xscreensaver).
