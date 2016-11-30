@@ -3,33 +3,19 @@
 #This script wakes up xscreensaver locked screens on other monitors. (i.e. using Synergy)
 
 #Only xscreensaver is supported at this time.
-#It doesn't always seem to work, so you might have to run it a couple times.
-#THAT BEING SAID, still faster than entering your password on each system!!!
 #I reccomend you bind it to Super+U hotkey in your window manager.
-
-### Usage Warning ###
-# THIS MAY ACCIDENTALLY PASTE YOUR PASSWORD INTO A CHAT WINDOW AND COMPROMISE YOUR PASSWORD
-# TO AVOID THIS: ONLY RUN THE COMMAND ONCE, WAIT APPROXIMATELY 30 SECONDS BEFORE TRYING AGAIN
-# SOME SAFEGUARDS ARE BUILT IN TO PREVENT THIS, BUT XDOTOOL CAN BE UNPREDICTABLE AT TIMES 
-# USE AT YOUR OWN RISK
 
 ### Installation Instructions ###
 # 1) Install ssh keys between all your systems
 #    a) Create keys using "ssh-keygen" if you haven't done this already.
 #    b) Use "ssh-copy-id user@<hostname>" to copy it to your other systems.
 #    c) Use "ssh user@<hostname>" to make sure you can log in without password.
-# 2) Install the "xdotool" on all systems - this will allow you to use the keyboard to send a password remotely
-# 3) Configure the variables in the configuration section
-# 4) Refer to wakeup.sh.log for troubleshooting
+# 2) Configure the variables in the configuration section
+# 3) Refer to wakeup.sh.log for troubleshooting
 
 ### Configuration ###
 # USER = your username - should be the same between all systems
 USER=username
-
-# Password = your password. If you need to do key combos, use the "+" sign. Add spaces between each key press.
-# For example, if you password is "P@ssw0rd$$" it would become:
-#    "P shift+2 s s w 0 r d shift+4 shift+4"
-PASSWORD="P shift+2 s s w 0 r d shift+4 shift+4"
 
 # Hosts. These are the hostnames or IPs of the systems you are entering the password on.
 # Separated by spaces. Should be straightforward.
@@ -66,35 +52,16 @@ set -m
 while read -r HOST
 do
         (
-        RETRY=0
         DISPLAY_NUMBER=$(echo $(ssh -o "StrictHostKeyChecking no" $USER@$HOST "ls -al /tmp/.X11-unix | grep $USER") | awk '{print $9}' | awk '{ print substr($0,2,2) }' )
         while [[ $(ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]];
         do
-                if [[ $RETRY -gt 0 ]]; then
-                        echo "Host $HOST was not successfully unlocked. Double checking in 5 seconds..."
-                        sleep 5
-                        if [[ $(ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xscreensaver-command -time 2> /dev/null | grep locked | wc -l") -gt 0 ]]; then
-                                echo "Host $HOST still locked."
-                                ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xdotool key --delay 50 Escape; sleep 1; xdotool key --delay 50 $PASSWORD Return"
-                                echo "Password sent to $HOST. RETRY = 1. Sleep 15 seconds before testing..."
-                                sleep 15
-                        else
-                                echo "Host $HOST is now unlocked."
-                                break
-                        fi
-                else
-                        ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xdotool key --delay 50 Escape; sleep 1; xdotool key --delay 50 $PASSWORD Return"
-                        echo "Password sent to $HOST. RETRY = 1. Sleep 15 seconds before testing..."
-                        RETRY=1
-                        sleep 15
-
-                fi
+             ssh $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; pkill -HUP xscreensaver"
+             sleep 5
         done
         echo "$HOST logged in successfully!"
         ) &
 done <<< "$HOSTS"
 ### HOST SECTION END ###
-
 
 #wait 5 seconds for safety and then remove the lock file
 sleep 5
