@@ -21,10 +21,10 @@ while read -r HOST
 do
         (
                 echo "getting display number..."
-                DISPLAY_NUMBER=$(echo $(ssh -o "StrictHostKeyChecking no" $USER@$HOST "ls -al /tmp/.X11-unix | grep $USER") | awk '{print $9}' | awk '{ print substr($0,2,2) }' )
+                DISPLAY_NUMBER=$(ssh -o "StrictHostKeyChecking no" $USER@$HOST "w -i" | grep tty | awk '{print $3}' )
                 echo "display: $DISPLAY_NUMBER"
                 echo "locking $USER@$HOST..."
-                ssh -o "StrictHostKeyChecking no" $USER@$HOST "export DISPLAY=:$DISPLAY_NUMBER; xscreensaver-command -lock"
+                ssh -o "StrictHostKeyChecking no" $USER@$HOST "export DISPLAY=$DISPLAY_NUMBER; xscreensaver-command -lock"
         ) &
 done <<< "$HOSTS"
 ### HOST SECTION END ###
